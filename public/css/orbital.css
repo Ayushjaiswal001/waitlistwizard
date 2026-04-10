@@ -1,0 +1,369 @@
+/* =============================================================
+   WaitlistWizard — Radial Orbital Timeline
+   Vanilla CSS implementation of the orbital node visualization
+   ============================================================= */
+
+/* ── Section ─────────────────────────────────────────────── */
+.orbital-section {
+  padding: 100px 5% 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.orbital-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.orbital-header h2 {
+  font-family: 'Sora', system-ui, sans-serif;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.orbital-header p {
+  font-size: 17px;
+  color: rgba(255,255,255,.45);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ── Container ───────────────────────────────────────────── */
+.orbital-container {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  height: 560px;
+  margin: 0 auto;
+  cursor: default;
+}
+
+.orbital-viewport {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Central Orb ─────────────────────────────────────────── */
+.orb-center {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6, #14b8a6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  animation: orbGlow 3s ease infinite;
+}
+
+@keyframes orbGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,.25), 0 0 60px rgba(59,130,246,.1); }
+  50% { box-shadow: 0 0 30px rgba(139,92,246,.4), 0 0 80px rgba(59,130,246,.15); }
+}
+
+.orb-center-inner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.85);
+}
+
+.orb-ping {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.15);
+  animation: orbPing 2.5s cubic-bezier(0,0,.2,1) infinite;
+  pointer-events: none;
+}
+
+.orb-ping-1 { width: 80px; height: 80px; }
+.orb-ping-2 { width: 100px; height: 100px; animation-delay: .7s; border-color: rgba(255,255,255,.08); }
+
+@keyframes orbPing {
+  0% { transform: scale(1); opacity: .6; }
+  75%, 100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ── Orbital Ring ────────────────────────────────────────── */
+.orb-ring {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.06);
+  pointer-events: none;
+}
+
+/* ── Nodes ────────────────────────────────────────────────── */
+.orb-node {
+  position: absolute;
+  cursor: pointer;
+  transition: opacity .4s ease;
+  /* transform is set by JS */
+}
+
+.orb-node-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,.25);
+  background: rgba(9,9,11,.92);
+  color: #fff;
+  font-size: 18px;
+  transition: all .35s cubic-bezier(.4,0,.2,1);
+  position: relative;
+  z-index: 2;
+  user-select: none;
+}
+
+.orb-node:hover .orb-node-dot {
+  border-color: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.08);
+}
+
+/* Active node */
+.orb-node.active .orb-node-dot {
+  background: #fff;
+  color: #09090b;
+  border-color: #fff;
+  transform: scale(1.35);
+  box-shadow: 0 0 24px rgba(255,255,255,.25), 0 0 48px rgba(139,92,246,.15);
+}
+
+/* Related/pulsing node */
+.orb-node.related .orb-node-dot {
+  background: rgba(255,255,255,.3);
+  color: #09090b;
+  border-color: rgba(255,255,255,.7);
+  animation: relPulse 1.8s ease infinite;
+}
+
+@keyframes relPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,.2); }
+}
+
+/* Energy glow behind dot */
+.orb-energy {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transition: opacity .3s;
+}
+
+/* ── Node Label ──────────────────────────────────────────── */
+.orb-label {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  transition: all .3s;
+  pointer-events: none;
+}
+
+.orb-node.active .orb-label {
+  color: #fff;
+  transform: translateX(-50%) scale(1.1);
+}
+
+/* ── Expanded Card ───────────────────────────────────────── */
+.orb-card {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  width: 264px;
+  background: rgba(14,14,22,.96);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 14px;
+  box-shadow:
+    0 20px 48px rgba(0,0,0,.6),
+    0 0 1px rgba(255,255,255,.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease;
+  transform: translateX(-50%) translateY(10px);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.orb-node.active .orb-card {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Connector line */
+.orb-card::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 14px;
+  background: rgba(255,255,255,.2);
+}
+
+/* ── Card internals ──────────────────────────────────────── */
+.orb-card-header {
+  padding: 16px 18px 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orb-card-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.orb-card-badge.completed {
+  color: #fff;
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,255,255,.15);
+}
+
+.orb-card-badge.in-progress {
+  color: #09090b;
+  background: #fff;
+  border-color: #fff;
+}
+
+.orb-card-badge.pending {
+  color: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.1);
+}
+
+.orb-card-date {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(255,255,255,.35);
+}
+
+.orb-card-title {
+  padding: 6px 18px 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  font-family: 'Sora', system-ui, sans-serif;
+}
+
+.orb-card-body {
+  padding: 0 18px 18px;
+  font-size: 13px;
+  color: rgba(255,255,255,.65);
+  line-height: 1.55;
+}
+
+/* Energy bar */
+.orb-energy-bar {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.orb-energy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 6px;
+}
+
+.orb-energy-header span:last-child {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.orb-energy-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.orb-energy-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  transition: width .6s ease;
+}
+
+/* Connected nodes */
+.orb-connected {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.orb-connected-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.orb-connected-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.1);
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .2s;
+  margin: 2px;
+}
+
+.orb-connected-btn:hover {
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  border-color: rgba(255,255,255,.2);
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .orbital-section { padding: 60px 4% 50px; }
+  .orbital-container { height: 460px; }
+  .orb-ring { width: 280px; height: 280px; }
+  .orb-node-dot { width: 38px; height: 38px; font-size: 16px; }
+  .orb-label { font-size: 9px; top: 46px; }
+  .orb-card { width: 230px; }
+  .orb-card-title { font-size: 14px; }
+  .orb-card-body { font-size: 12px; }
+  .orb-center { width: 52px; height: 52px; }
+  .orb-center-inner { width: 22px; height: 22px; }
+}

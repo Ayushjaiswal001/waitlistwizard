@@ -26,6 +26,7 @@ export function renderLandingPage() {
   html += '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />';
   html += '<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />';
   html += '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'.9em\' font-size=\'90\'>⚡</text></svg>" />';
+  html += '<link rel="stylesheet" href="/css/orbital.css" />';
 
   // JSON-LD Structured Data
   html += '<script type="application/ld+json">';
@@ -417,11 +418,18 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   html += '<div class="fcard rv"><div class="ficon">💌</div><h3>Smart Notifications</h3><p>Automated emails keep your audience engaged and excited about your launch.</p></div>';
   html += '<div class="fcard rv"><div class="ficon">🛡</div><h3>Clean List Protection</h3><p>Built-in spam detection and validation ensures a high-quality subscriber list.</p></div></div></section>';
 
-  // ── How it works ──
-  html += '<section class="how" id="how"><div class="hcont2"><div class="htitle rv"><h2>How it works</h2><p>Three simple steps to launch your waitlist.</p></div>';
-  html += '<div class="hsteps"><div class="hstep rv"><div class="hnum">01</div><h3>Create</h3><p>Design your waitlist page with our intuitive builder. Add your branding, copy, and custom fields.</p></div>';
-  html += '<div class="hstep rv"><div class="hnum">02</div><h3>Share</h3><p>Share your unique link across social media, email, and ads to start collecting signups.</p></div>';
-  html += '<div class="hstep rv"><div class="hnum">03</div><h3>Launch</h3><p>Watch your list grow with real-time analytics, then export and launch to your engaged audience.</p></div></div></div></section>';
+  // ── How it works — Radial Orbital Timeline ──
+  html += '<section class="orbital-section" id="how">';
+  html += '<div class="orbital-header rv"><h2>How it works</h2><p>Your journey from idea to viral waitlist.</p></div>';
+  html += '<div class="orbital-container" id="orbitalContainer">';
+  html += '<div class="orbital-viewport">';
+  // Central orb
+  html += '<div class="orb-center"><div class="orb-center-inner"></div><div class="orb-ping orb-ping-1"></div><div class="orb-ping orb-ping-2"></div></div>';
+  // Orbital ring
+  html += '<div class="orb-ring"></div>';
+  // Nodes are rendered by /js/orbital.js
+  html += '</div></div>';
+  html += '</section>';
 
   // ── Pricing ──
   html += '<section class="pricing" id="pricing"><div class="pcont"><div class="ptitle rv"><h2>Simple, transparent pricing</h2><p>Choose the plan that fits your needs. Cancel anytime.</p></div>';
@@ -552,6 +560,7 @@ function animate(){
 animate();
 `;
   html += '</script>';
+  html += '<script src="/js/orbital.js" defer></script>';
   html += '</body></html>';
   return html;
 }
