@@ -368,13 +368,13 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   html += '<div class="logo"><span class="logo-icon">⚡</span><span>WaitlistWizard</span></div>';
   html += '<div class="nlinks"><a href="#features">Features</a><a href="#how">How it works</a><a href="#pricing">Pricing</a></div>';
   // FIX: Pure <a> tags — no nested <button> inside <a>
-  html += '<div class="nctas"><a href="/#/login" class="nbtn-link ghost">Sign in</a><a href="/#/register" class="nbtn-link primary">Get started free</a></div>';
+  html += '<div class="nctas"><a href="/app#/login" class="nbtn-link ghost">Sign in</a><a href="/app#/register" class="nbtn-link primary">Get started free</a></div>';
   html += '<button class="ham" onclick="openMob()"><span></span><span></span><span></span></button>';
   html += '</nav>';
 
   // ── Mobile menu ──
   html += '<div class="moverlay" id="mobMenu">';
-  html += '<a href="#features" onclick="closeMob()">Features</a><a href="#how" onclick="closeMob()">How it works</a><a href="#pricing" onclick="closeMob()">Pricing</a><a href="/#/login" onclick="closeMob()">Sign in</a><a href="/#/register" onclick="closeMob()">Get started</a>';
+  html += '<a href="#features" onclick="closeMob()">Features</a><a href="#how" onclick="closeMob()">How it works</a><a href="#pricing" onclick="closeMob()">Pricing</a><a href="/app#/login" onclick="closeMob()">Sign in</a><a href="/app#/register" onclick="closeMob()">Get started</a>';
   html += '<button class="mcls" onclick="closeMob()">&times;</button>';
   html += '</div>';
 
@@ -386,7 +386,7 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   html += '<h1 class="hh1"><span>Launch to an audience</span><span class="gr">already waiting.</span></h1>';
   html += '<p class="hsub">Build <strong>stunning waitlist pages</strong> with viral referral mechanics. Turn signups into superfans before you even launch.</p>';
   // FIX: Pure <a> tags — no nested <button>
-  html += '<div class="hctas"><a href="/#/register" class="hbtn-link primary">Get started free →</a><a href="#how" class="hbtn-link secondary">See how it works</a></div>';
+  html += '<div class="hctas"><a href="/app#/register" class="hbtn-link primary">Get started free →</a><a href="#how" class="hbtn-link secondary">See how it works</a></div>';
   html += '<div class="hsocial"><div class="hstars">★★★★★</div><div class="havs"><div class="hav">AJ</div><div class="hav">KM</div><div class="hav">PR</div><div class="hav">SV</div><div class="hav">RK</div></div><span>500+ founders launched with WaitlistWizard</span></div>';
   html += '</div>';
 
@@ -428,13 +428,13 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   html += '<div class="pgrid"><div class="pcard rv"><h3>Free</h3><p class="pdesc">Perfect for testing the waters</p><div class="pprice"><span class="pprice-num">$0</span><span class="pprice-per">/forever</span></div>';
   html += '<ul class="pfeatures"><li><span class="pcheck">✓</span> 1 waitlist page</li><li><span class="pcheck">✓</span> Up to 100 signups</li><li><span class="pcheck">✓</span> Basic analytics</li><li><span class="pcheck">✓</span> Email notifications</li><li><span class="pcheck">✓</span> WaitlistWizard branding</li></ul>';
   // FIX: Pure <a> tag — no nested <button>
-  html += '<a href="/#/register" class="pbtn-link">Get started free</a></div>';
+  html += '<a href="/app#/register" class="pbtn-link">Get started free</a></div>';
   html += '<div class="pcard featured rv"><div class="pbadge">Most popular</div><h3>Pro</h3><p class="pdesc">For serious product launches</p><div class="pprice"><span class="pprice-num">$19</span><span class="pprice-per">/mo</span></div>';
   html += '<ul class="pfeatures"><li><span class="pcheck">✓</span> 5 waitlist pages</li><li><span class="pcheck">✓</span> Unlimited signups</li><li><span class="pcheck">✓</span> Advanced analytics</li><li><span class="pcheck">✓</span> Remove branding</li><li><span class="pcheck">✓</span> Custom domains</li><li><span class="pcheck">✓</span> CSV export</li></ul>';
-  html += '<a href="/#/register" class="pbtn-link">Start 14-day trial</a></div>';
+  html += '<a href="/app#/register" class="pbtn-link">Start 14-day trial</a></div>';
   html += '<div class="pcard rv"><h3>Business</h3><p class="pdesc">For teams and agencies</p><div class="pprice"><span class="pprice-num">$49</span><span class="pprice-per">/mo</span></div>';
   html += '<ul class="pfeatures"><li><span class="pcheck">✓</span> 20 waitlist pages</li><li><span class="pcheck">✓</span> Unlimited signups</li><li><span class="pcheck">✓</span> Priority support</li><li><span class="pcheck">✓</span> API access</li><li><span class="pcheck">✓</span> White-label option</li><li><span class="pcheck">✓</span> Team collaboration</li></ul>';
-  html += '<a href="/#/register" class="pbtn-link">Start 14-day trial</a></div></div></div></section>';
+  html += '<a href="/app#/register" class="pbtn-link">Start 14-day trial</a></div></div></div></section>';
 
   // ── FAQ ──
   html += '<section class="faq"><div class="faqcont"><div class="faqleft rv"><h2>FAQ</h2><p>Can\'t find what you\'re looking for? <a href="/legal/contact">Contact us</a>.</p></div>';
@@ -451,7 +451,7 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
 
   // ── CTA ──
   html += '<section class="cta"><div class="ctacont rv"><h2>Ready to build hype?</h2><p>Join thousands of founders who launched with WaitlistWizard.</p>';
-  html += '<div class="ctaform"><input type="email" id="ctaEmail" placeholder="Enter your email" /><button type="button" onclick="window.location.href=\'/#/register\'">Get started free →</button></div></div></section>';
+  html += '<div class="ctaform"><input type="email" id="ctaEmail" placeholder="Enter your email" /><button type="button" onclick="window.location.href=\'/app#/register\'">Get started free →</button></div></div></section>';
 
   // ── Footer ──
   html += '<footer><div class="fcont"><div class="logo"><span class="logo-icon">⚡</span><span>WaitlistWizard</span></div>';
