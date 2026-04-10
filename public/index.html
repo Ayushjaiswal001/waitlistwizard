@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WaitlistWizard — Build viral waitlists</title>
+  <meta name="description" content="Create stunning waitlist pages with referral mechanics. Build buzz before you launch." />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="WaitlistWizard" />
+  <meta property="og:description" content="Build viral waitlist pages with referral mechanics." />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+</head>
+<body>
+  <div id="app">
+    <div class="boot-loader">
+      <span class="boot-logo">⚡</span>
+      <div class="boot-spinner"></div>
+    </div>
+  </div>
+  <style>
+    .boot-loader{display:flex;flex-direction:column;align-items:center;
+      justify-content:center;height:100vh;background:#0a0a0f;gap:20px}
+    .boot-logo{font-size:40px}
+    .boot-spinner{width:28px;height:28px;border:3px solid
+      rgba(167,139,250,0.2);border-top-color:#a78bfa;border-radius:50%;
+      animation:boot-spin 0.75s linear infinite}
+    @keyframes boot-spin{to{transform:rotate(360deg)}}
+  </style>
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

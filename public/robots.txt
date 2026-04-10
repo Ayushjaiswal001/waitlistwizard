@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/*
+Disallow: /health
+Sitemap: https://waitlistwizard-ki1m.onrender.com/sitemap.xml
