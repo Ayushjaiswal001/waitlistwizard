@@ -14,21 +14,38 @@ const BODY_FONTS = {
   'space-dm': 'DM Sans', 'epilogue-karla': 'Karla',
 };
 
-function buildBg(page) {
-  const [c1, c2] = (page.bg_value || '#0f172a,#1e1b4b').split(',');
-  if (page.bg_style === 'solid') return `background:${c1}`;
-  if (page.bg_style === 'mesh')
-    return `background:${c1};background-image:radial-gradient(at 40% 20%,${c2||c1}55 0px,transparent 50%),radial-gradient(at 80% 80%,${c1}88 0px,transparent 50%)`;
-  return `background:linear-gradient(135deg,${c1} 0%,${c2||c1} 100%)`;
+/**
+ * Derive a palette from a single accent color.
+ * Returns HSL variants for bg tints, text, borders.
+ */
+function buildPalette(accent) {
+  // Parse hex to get a hue for tinting
+  const hex = (accent || '#4f7cff').replace('#', '');
+  const r = parseInt(hex.slice(0,2),16)/255;
+  const g = parseInt(hex.slice(2,4),16)/255;
+  const b = parseInt(hex.slice(4,6),16)/255;
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  let h = 0;
+  if (max !== min) {
+    const d = max - min;
+    if (max === r) h = ((g-b)/d + (g < b ? 6 : 0)) * 60;
+    else if (max === g) h = ((b-r)/d + 2) * 60;
+    else h = ((r-g)/d + 4) * 60;
+  }
+  return { hue: Math.round(h) };
 }
 
 export function renderWaitlistPage(page) {
   const hFont = HEADING_FONTS[page.font_pair] || 'Sora';
   const bFont = BODY_FONTS[page.font_pair] || 'Inter';
   const fontUrl = FONT_URLS[page.font_pair] || FONT_URLS['cabinet-inter'];
-  const bg = buildBg(page);
-  const accent = page.accent_color || '#a78bfa';
+  const accent = page.accent_color || '#4f7cff';
+  const { hue } = buildPalette(accent);
   const APP_URL = process.env.APP_URL || '';
+
+  // Determine if user chose a light or dark background
+  const bgStyle = page.bg_style || 'dark';
+  const isLight = bgStyle === 'light';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -51,92 +68,415 @@ export function renderWaitlistPage(page) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="${fontUrl}" rel="stylesheet"/>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{min-height:100vh;display:flex;align-items:center;justify-content:center;${bg};font-family:'${bFont}',sans-serif;padding:20px;position:relative;overflow-x:hidden}
-  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.025;pointer-events:none}
-  .card{max-width:480px;width:100%;padding:48px 40px;background:rgba(255,255,255,.06);backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);border:1px solid rgba(255,255,255,.1);border-radius:24px;box-shadow:0 24px 48px rgba(0,0,0,.4);animation:fadeUp .5s ease;position:relative;z-index:1}
-  @keyframes fadeUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .logo{max-height:48px;margin-bottom:20px}
-  .pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:12px;margin-bottom:16px}
-  .pill::before{content:'';width:6px;height:6px;border-radius:50%;background:${accent};display:block;animation:pulse 1.5s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  h1{font-family:'${hFont}',sans-serif;font-size:34px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:12px}
-  .sub{font-size:17px;color:rgba(255,255,255,.6);margin-bottom:28px;line-height:1.6}
-  .form-row{display:flex;gap:8px;margin-bottom:8px}
-  .email-input{flex:1;padding:13px 16px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:15px;outline:none;font-family:'${bFont}',sans-serif;transition:border-color .2s}
-  .email-input::placeholder{color:rgba(255,255,255,.35)}
-  .email-input:focus{border-color:${accent}}
-  .cta-btn{padding:13px 20px;border-radius:12px;background:${accent};border:none;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'${hFont}',sans-serif;white-space:nowrap;transition:opacity .2s,transform .1s}
-  .cta-btn:hover{opacity:.9}
-  .cta-btn:active{transform:scale(.98)}
-  .cta-btn:disabled{opacity:.6;cursor:not-allowed}
-  .err{color:#f87171;font-size:13px;margin-top:6px;display:none}
-  .success{display:none;text-align:center;animation:fadeUp .4s ease}
-  .check-svg{margin:0 auto 16px;display:block}
-  .check-circle{fill:none;stroke:${accent};stroke-width:2;stroke-dasharray:166;stroke-dashoffset:166;animation:draw .6s .2s forwards}
-  .check-mark{fill:none;stroke:${accent};stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:48;stroke-dashoffset:48;animation:draw .4s .7s forwards}
-  @keyframes draw{to{stroke-dashoffset:0}}
-  .pos-num{font-family:'${hFont}',sans-serif;font-size:56px;font-weight:800;color:${accent};line-height:1;margin:12px 0 4px}
-  .pos-label{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:20px}
-  .success-msg{font-size:16px;color:rgba(255,255,255,.8);margin-bottom:24px;line-height:1.5}
-  .ref-label{font-size:12px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-  .ref-row{display:flex;gap:8px;margin-bottom:16px}
-  .ref-input{flex:1;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:13px;font-family:monospace;outline:none}
-  .copy-btn{padding:10px 16px;border-radius:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:13px;cursor:pointer;font-family:'${bFont}',sans-serif;transition:background .2s}
-  .copy-btn:hover{background:rgba(255,255,255,.14)}
-  .share-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:4px}
-  .share-btn{padding:8px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:transparent;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;font-family:'${bFont}',sans-serif;transition:all .2s;text-decoration:none;display:inline-block}
-  .share-btn:hover{transform:translateY(-1px)}
-  .share-btn.tw:hover{background:#1da1f2;border-color:#1da1f2;color:#fff}
-  .share-btn.wa:hover{background:#25d366;border-color:#25d366;color:#fff}
-  .share-btn.li:hover{background:#0077b5;border-color:#0077b5;color:#fff}
-  .ref-count{font-size:13px;color:rgba(255,255,255,.4);margin-top:12px}
-  .branding{text-align:center;margin-top:28px;font-size:12px;color:rgba(255,255,255,.2)}
-  .branding a{color:rgba(255,255,255,.3);text-decoration:none}
-  .branding a:hover{color:rgba(255,255,255,.6)}
-  @media(max-width:520px){.card{padding:32px 20px}.form-row{flex-direction:column}h1{font-size:26px}}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+/* ── Reset ──────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ── Page ───────────────────────────── */
+:root {
+  --accent: ${accent};
+  --accent-soft: ${accent}12;
+  --accent-border: ${accent}30;
+  --bg: #09090b;
+  --bg-card: #111113;
+  --bg-input: #18181b;
+  --border: #27272a;
+  --border-hover: #3f3f46;
+  --text: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --radius: 12px;
+  --font-h: '${hFont}', system-ui, sans-serif;
+  --font-b: '${bFont}', system-ui, sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  font-family: var(--font-b);
+  padding: 24px;
+  color: var(--text);
+  position: relative;
+}
+
+/* Very subtle top accent glow — not a gradient bg */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 500px;
+  background: radial-gradient(ellipse, ${accent}08, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card ─── Clean, structured, elevated ── */
+.card {
+  max-width: 460px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn .4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card-inner {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 44px 40px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.3),
+    0 4px 16px rgba(0,0,0,.2);
+}
+
+/* ── Logo ────────────────────────────── */
+.logo { max-height: 40px; margin-bottom: 24px; }
+
+/* ── Social proof pill ───────────────── */
+.proof-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.proof-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 2s ease infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+/* ── Typography ─────────────────────── */
+h1 {
+  font-family: var(--font-h);
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.sub {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* ── Form ────────────────────────────── */
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.email-input {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 15px;
+  font-family: var(--font-b);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.email-input::placeholder { color: var(--text-muted); }
+
+.email-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px ${accent}15;
+}
+
+/* ── CTA Button — SOLID, not gradient ── */
+.cta-btn {
+  padding: 12px 24px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-h);
+  white-space: nowrap;
+  transition: opacity .15s, transform .1s;
+  /* Slight text shadow for readability */
+  text-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+.cta-btn:hover { opacity: .88; }
+.cta-btn:active { transform: scale(.97); }
+.cta-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Trust line ─────────────────────── */
+.trust-line {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trust-line svg { flex-shrink: 0; }
+
+/* ── Error ───────────────────────────── */
+.err {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 8px;
+  display: none;
+}
+
+/* ── Success State ───────────────────── */
+.success {
+  display: none;
+  text-align: center;
+  animation: fadeIn .4s ease;
+}
+
+.check-svg {
+  margin: 0 auto 20px;
+  display: block;
+}
+
+.check-circle {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: draw .6s .2s forwards;
+}
+
+.check-mark {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: draw .4s .7s forwards;
+}
+
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.pos-num {
+  font-family: var(--font-h);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  margin: 8px 0 4px;
+  letter-spacing: -1px;
+}
+
+.pos-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+}
+
+.success-msg {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.ref-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.ref-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.ref-input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: monospace;
+  outline: none;
+}
+
+.copy-btn {
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-b);
+  transition: border-color .2s, background .2s;
+}
+
+.copy-btn:hover {
+  background: var(--border);
+  border-color: var(--border-hover);
+}
+
+.share-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.share-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--font-b);
+  transition: all .2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.share-btn:hover { border-color: var(--border-hover); color: var(--text); }
+.share-btn.tw:hover { background: #1da1f2; border-color: #1da1f2; color: #fff; }
+.share-btn.wa:hover { background: #25d366; border-color: #25d366; color: #fff; }
+.share-btn.li:hover { background: #0077b5; border-color: #0077b5; color: #fff; }
+
+.ref-count {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+/* ── Branding ────────────────────────── */
+.branding {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: .5;
+  transition: opacity .2s;
+}
+
+.branding:hover { opacity: .8; }
+
+.branding a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.branding a:hover { color: var(--text-secondary); }
+
+/* ── Responsive ──────────────────────── */
+@media (max-width: 520px) {
+  .card-inner { padding: 32px 24px; }
+  .form-row { flex-direction: column; }
+  h1 { font-size: 24px; }
+  .sub { font-size: 15px; }
+  .pos-num { font-size: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; }
+}
 </style>
 </head>
 <body>
 <div class="card">
-  ${page.logo_url ? `<img src="${esc(page.logo_url)}" class="logo" alt="Logo"/>` : ''}
-  ${page.total_signups > 3 ? `<div class="pill">${page.total_signups.toLocaleString()} people on the waitlist</div>` : ''}
-  <h1>${esc(page.headline)}</h1>
-  <p class="sub">${esc(page.subheadline)}</p>
+  <div class="card-inner">
+    ${page.logo_url ? `<img src="${esc(page.logo_url)}" class="logo" alt="Logo"/>` : ''}
+    ${page.total_signups > 3 ? `<div class="proof-pill"><span class="proof-dot"></span>${page.total_signups.toLocaleString()} people on the waitlist</div>` : ''}
+    <h1>${esc(page.headline)}</h1>
+    <p class="sub">${esc(page.subheadline)}</p>
 
-  <div id="formArea">
-    <div class="form-row">
-      <input type="email" id="emailInput" class="email-input" placeholder="your@email.com" autocomplete="email"/>
-      <button class="cta-btn" id="joinBtn" onclick="joinWaitlist()">${esc(page.cta_text)}</button>
+    <div id="formArea">
+      <div class="form-row">
+        <input type="email" id="emailInput" class="email-input" placeholder="Enter your email" autocomplete="email"/>
+        <button class="cta-btn" id="joinBtn" onclick="joinWaitlist()">${esc(page.cta_text)}</button>
+      </div>
+      <div class="trust-line">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        No spam. Unsubscribe anytime.
+      </div>
+      <div class="err" id="errMsg"></div>
     </div>
-    <div class="err" id="errMsg"></div>
+
+    <div class="success" id="successArea">
+      <svg class="check-svg" width="56" height="56" viewBox="0 0 64 64">
+        <circle class="check-circle" cx="32" cy="32" r="30"/>
+        <path class="check-mark" d="M20 32l9 9 15-18"/>
+      </svg>
+      <p class="success-msg">${esc(page.success_message)}</p>
+      <div class="pos-num" id="posNum"></div>
+      <div class="pos-label">your position</div>
+      <div class="ref-label">Share to move up</div>
+      <div class="ref-row">
+        <input type="text" class="ref-input" id="refLink" readonly/>
+        <button class="copy-btn" onclick="copyLink()">Copy</button>
+      </div>
+      <div class="share-btns">
+        <a class="share-btn tw" id="shareTwitter" href="#" target="_blank">𝕏 Twitter</a>
+        <a class="share-btn wa" id="shareWhatsApp" href="#" target="_blank">WhatsApp</a>
+        <a class="share-btn li" id="shareLinkedIn" href="#" target="_blank">LinkedIn</a>
+      </div>
+      <div class="ref-count" id="refCount">0 referrals so far</div>
+    </div>
+
+    ${!page.remove_branding ? `
+      <div class="branding">Powered by <a href="${APP_URL}" target="_blank">WaitlistWizard</a></div>
+    ` : ''}
   </div>
-
-  <div class="success" id="successArea">
-    <svg class="check-svg" width="64" height="64" viewBox="0 0 64 64">
-      <circle class="check-circle" cx="32" cy="32" r="30"/>
-      <path class="check-mark" d="M20 32l9 9 15-18"/>
-    </svg>
-    <p class="success-msg">${esc(page.success_message)}</p>
-    <div class="pos-num" id="posNum"></div>
-    <div class="pos-label">your position</div>
-    <div class="ref-label">Your unique referral link</div>
-    <div class="ref-row">
-      <input type="text" class="ref-input" id="refLink" readonly/>
-      <button class="copy-btn" onclick="copyLink()">Copy</button>
-    </div>
-    <div class="share-btns">
-      <a class="share-btn tw" id="shareTwitter" href="#" target="_blank">𝕏 Twitter</a>
-      <a class="share-btn wa" id="shareWhatsApp" href="#" target="_blank">WhatsApp</a>
-      <a class="share-btn li" id="shareLinkedIn" href="#" target="_blank">LinkedIn</a>
-    </div>
-    <div class="ref-count" id="refCount">0 referrals so far</div>
-  </div>
-
-  ${!page.remove_branding ? `
-    <div class="branding">Powered by <a href="${APP_URL}" target="_blank">WaitlistWizard</a></div>
-  ` : ''}
 </div>
 
 <script>
@@ -201,6 +541,7 @@ export function renderWaitlistPage(page) {
     }).catch(() => { input.select(); document.execCommand('copy'); });
   }
 
+  // Enter key to submit
   document.getElementById('emailInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') joinWaitlist();
   });
