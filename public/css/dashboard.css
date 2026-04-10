@@ -1,30 +1,38 @@
 /* =============================================================
    WaitlistWizard — Design System & Base Styles
+   Premium dark-mode deep-space aesthetic
    ============================================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap');
 
 /* ── Design Tokens ───────────────────────────────────────── */
 :root {
   /* Backgrounds */
   --bg-primary:    #06060e;
-  --bg-secondary:  #0d0d1a;
-  --bg-card:       #111124;
-  --bg-input:      #161630;
+  --bg-secondary:  #0c0c1a;
+  --bg-card:       #101026;
+  --bg-input:      #14142e;
+  --bg-elevated:   #181838;
 
   /* Borders */
-  --border:        #1f1f40;
-  --border-hover:  #2d2d55;
+  --border:        #1e1e42;
+  --border-hover:  #2e2e5a;
+  --border-glow:   rgba(167, 139, 250, 0.25);
 
   /* Text */
   --text-primary:  #ededf0;
   --text-secondary:#8888aa;
   --text-muted:    #555570;
 
-  /* Accent */
+  /* Accent — purple/violet */
   --accent:        #a78bfa;
   --accent-hover:  #c4b5fd;
-  --accent-subtle: rgba(167, 139, 250, 0.10);
+  --accent-subtle: rgba(167, 139, 250, 0.08);
+  --accent-glow:   rgba(167, 139, 250, 0.25);
+
+  /* Complementary accents */
+  --blue:     #4f7cff;
+  --cyan:     #00d4ff;
+  --pink:     #ff4d8d;
+  --gold:     #ffc842;
 
   /* Status */
   --success:  #34d399;
@@ -38,15 +46,22 @@
   --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
   /* Radii */
-  --radius-sm: 6px;
-  --radius:    10px;
+  --radius-sm: 8px;
+  --radius:    12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
 
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
-  --shadow:    0 4px 16px rgba(0,0,0,.5);
-  --shadow-lg: 0 16px 48px rgba(0,0,0,.6);
+  --shadow:    0 4px 20px rgba(0,0,0,.5);
+  --shadow-lg: 0 16px 48px rgba(0,0,0,.7);
+  --shadow-glow: 0 0 30px rgba(167, 139, 250, 0.08);
+
+  /* Gradients */
+  --gradient-accent: linear-gradient(135deg, var(--blue), var(--accent));
+  --gradient-card: linear-gradient(135deg, rgba(167,139,250,.03), rgba(79,124,255,.02));
+  --gradient-bg: radial-gradient(ellipse at 20% 0%, rgba(79,124,255,.08), transparent 50%),
+                 radial-gradient(ellipse at 80% 100%, rgba(167,139,250,.06), transparent 50%);
 }
 
 /* ── Reset ───────────────────────────────────────────────── */
@@ -56,7 +71,11 @@
   padding: 0;
 }
 
-html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 body {
   font-family: var(--font-body);
@@ -66,8 +85,26 @@ body {
   overflow-x: hidden;
 }
 
+/* Ambient background glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-bg);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+}
+
 a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a:hover { color: var(--accent-hover); }
 
 input, textarea, select, button {
   font-family: var(--font-body);
@@ -86,7 +123,10 @@ ul, ol { list-style: none; }
 /* ── Scrollbar ───────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
 ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
 /* ── Selection ───────────────────────────────────────────── */
@@ -132,4 +172,42 @@ p a {
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+p a:hover { color: var(--accent-hover); }
+
+/* ── Toast notifications ─────────────────────────────────── */
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid;
+  backdrop-filter: blur(12px);
+  animation: toastIn .3s ease, toastOut .3s ease 3s forwards;
+  box-shadow: var(--shadow-lg);
+}
+
+.toast-success {
+  background: rgba(52, 211, 153, 0.12);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: var(--success);
+}
+
+.toast-error {
+  background: rgba(248, 113, 113, 0.12);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: var(--danger);
+}
+
+@keyframes toastIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes toastOut {
+  from { opacity: 1; }
+  to { opacity: 0; pointer-events: none; }
 }
