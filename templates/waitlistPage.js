@@ -51,42 +51,48 @@ export function renderWaitlistPage(page) {
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${esc(page.headline || 'Join the Waitlist')}</title>
-<meta name="description" content="${esc(page.subheadline || '')}"/>
-<meta name="theme-color" content="${esc(accent)}"/>
-<link rel="canonical" href="${APP_URL}/p/${esc(page.slug)}"/>
+<title>\${esc(page.headline || 'Join the Waitlist')}</title>
+<meta name="description" content="\${esc(page.subheadline || '')}"/>
+<meta name="theme-color" content="\${esc(accent)}"/>
+<link rel="canonical" href="\${APP_URL}/p/\${esc(page.slug)}"/>
 <meta property="og:type" content="website"/>
-<meta property="og:title" content="${esc(page.headline || 'Join the Waitlist')}"/>
-<meta property="og:description" content="${esc(page.subheadline || '')}"/>
-<meta property="og:url" content="${APP_URL}/p/${esc(page.slug)}"/>
-<meta property="og:image" content="${APP_URL}/og-image.png"/>
+<meta property="og:title" content="\${esc(page.headline || 'Join the Waitlist')}"/>
+<meta property="og:description" content="\${esc(page.subheadline || '')}"/>
+<meta property="og:url" content="\${APP_URL}/p/\${esc(page.slug)}"/>
+<meta property="og:image" content="\${APP_URL}/og-image.png"/>
 <meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="${esc(page.headline || 'Join the Waitlist')}"/>
-<meta name="twitter:description" content="${esc(page.subheadline || '')}"/>
-<meta name="twitter:image" content="${APP_URL}/og-image.png"/>
+<meta name="twitter:title" content="\${esc(page.headline || 'Join the Waitlist')}"/>
+<meta name="twitter:description" content="\${esc(page.subheadline || '')}"/>
+<meta name="twitter:image" content="\${APP_URL}/og-image.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="${fontUrl}" rel="stylesheet"/>
+<link href="\${fontUrl}" rel="stylesheet"/>
 <style>
 /* ── Reset ──────────────────────────── */
 *{box-sizing:border-box;margin:0;padding:0}
 
 /* ── Page ───────────────────────────── */
 :root {
-  --accent: ${accent};
-  --accent-soft: ${accent}12;
-  --accent-border: ${accent}30;
-  --bg: #09090b;
-  --bg-card: #111113;
-  --bg-input: #18181b;
-  --border: #27272a;
-  --border-hover: #3f3f46;
-  --text: #fafafa;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
+  --accent: \${accent};
+  --accent-soft: \${accent}12;
+  --accent-border: \${accent}30;
+  
+  /* Dynamic Light/Dark Mode Variables */
+  --bg: \${isLight ? '#FAFAFA' : '#0B0B0C'};
+  --bg-card: \${isLight ? '#FFFFFF' : '#111112'};
+  --bg-input: \${isLight ? '#F9FAFB' : '#17171A'};
+  --bg-input-hover: \${isLight ? '#F3F4F6' : '#1C1C1F'};
+  --border: \${isLight ? '#E5E7EB' : '#27272A'};
+  --border-hover: \${isLight ? '#D1D5DB' : '#3F3F46'};
+  --text: \${isLight ? '#111827' : '#FAFAFA'};
+  --text-secondary: \${isLight ? '#4B5563' : '#A1A1AA'};
+  --text-muted: \${isLight ? '#9CA3AF' : '#71717A'};
+  --shadow-sm: \${isLight ? '0 1px 2px rgba(0,0,0,0.02)' : '0 1px 2px rgba(0,0,0,0.2)'};
+  --shadow-md: \${isLight ? '0 4px 12px rgba(0,0,0,0.03)' : '0 4px 16px rgba(0,0,0,0.3)'};
+  
   --radius: 12px;
-  --font-h: '${hFont}', system-ui, sans-serif;
-  --font-b: '${bFont}', system-ui, sans-serif;
+  --font-h: '\${hFont}', system-ui, sans-serif;
+  --font-b: '\${bFont}', system-ui, sans-serif;
 }
 
 html {
@@ -106,42 +112,37 @@ body {
   position: relative;
 }
 
-/* Very subtle top accent glow — not a gradient bg */
+/* Very subtle background texture shift instead of glowing radials */
 body::before {
   content: '';
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 500px;
-  background: radial-gradient(ellipse, ${accent}08, transparent 70%);
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 50vh;
+  background: linear-gradient(to bottom, var(--border) 0%, transparent 100%);
+  opacity: 0.15;
   pointer-events: none;
   z-index: 0;
 }
 
 /* ── Card ─── Clean, structured, elevated ── */
 .card {
-  max-width: 460px;
+  max-width: 480px;
   width: 100%;
   position: relative;
   z-index: 1;
-  animation: fadeIn .4s ease;
+  animation: fadeIn 0.5s ease-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .card-inner {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 44px 40px;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.3),
-    0 4px 16px rgba(0,0,0,.2);
+  border-radius: 20px;
+  padding: 48px 40px;
+  box-shadow: var(--shadow-sm), var(--shadow-md);
 }
 
 /* ── Logo ────────────────────────────── */
@@ -217,7 +218,7 @@ h1 {
 
 .email-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px ${accent}15;
+  box-shadow: 0 0 0 3px \${accent}15;
 }
 
 /* ── CTA Button — SOLID, not gradient ── */
