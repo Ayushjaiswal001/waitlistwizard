@@ -77,18 +77,18 @@ export function renderWaitlistPage(page) {
   --accent-soft: \${accent}12;
   --accent-border: \${accent}30;
   
-  /* Dynamic Light/Dark Mode Variables */
-  --bg: \${isLight ? '#FAFAFA' : '#0B0B0C'};
-  --bg-card: \${isLight ? '#FFFFFF' : '#111112'};
-  --bg-input: \${isLight ? '#F9FAFB' : '#17171A'};
-  --bg-input-hover: \${isLight ? '#F3F4F6' : '#1C1C1F'};
-  --border: \${isLight ? '#E5E7EB' : '#27272A'};
-  --border-hover: \${isLight ? '#D1D5DB' : '#3F3F46'};
-  --text: \${isLight ? '#111827' : '#FAFAFA'};
-  --text-secondary: \${isLight ? '#4B5563' : '#A1A1AA'};
-  --text-muted: \${isLight ? '#9CA3AF' : '#71717A'};
-  --shadow-sm: \${isLight ? '0 1px 2px rgba(0,0,0,0.02)' : '0 1px 2px rgba(0,0,0,0.2)'};
-  --shadow-md: \${isLight ? '0 4px 12px rgba(0,0,0,0.03)' : '0 4px 16px rgba(0,0,0,0.3)'};
+  /* Force Dark/Space Mode Aesthetics per request */
+  --bg: #020617; /* slate-950 */
+  --bg-card: #000000;
+  --bg-input: #0f172a;
+  --bg-input-hover: #1e293b;
+  --border: #1e293b;
+  --border-hover: #334155;
+  --text: #ffffff;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.8);
   
   --radius: 12px;
   --font-h: '\${hFont}', system-ui, sans-serif;
@@ -103,6 +103,7 @@ html {
 body {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   background: var(--bg);
@@ -110,17 +111,29 @@ body {
   padding: 24px;
   color: var(--text);
   position: relative;
+  overflow: hidden; /* Prevent particle scroll */
 }
 
-/* Very subtle background texture shift instead of glowing radials */
-body::before {
-  content: '';
+/* Background Particle Container */
+#tsparticles {
   position: absolute;
-  top: 0; left: 0; right: 0; height: 50vh;
-  background: linear-gradient(to bottom, var(--border) 0%, transparent 100%);
-  opacity: 0.15;
-  pointer-events: none;
+  inset: 0;
   z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* To mimic the Sparkles radial gradient mask effect */
+.mask-gradient {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  mask-image: radial-gradient(350px 200px at top, transparent 20%, black);
+  -webkit-mask-image: radial-gradient(350px 200px at top, transparent 20%, black);
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* ── Card ─── Clean, structured, elevated ── */
@@ -128,7 +141,7 @@ body::before {
   max-width: 480px;
   width: 100%;
   position: relative;
-  z-index: 1;
+  z-index: 20;
   animation: fadeIn 0.5s ease-out;
 }
 
@@ -137,12 +150,36 @@ body::before {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Glowing Top Lines for Card */
+.card-glow-lines {
+  position: absolute;
+  top: -1px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  z-index: 21;
+}
+.card-glow-blur {
+  position: absolute;
+  top: -2px;
+  left: 20%;
+  right: 20%;
+  height: 4px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  filter: blur(4px);
+  z-index: 20;
+}
+
 .card-inner {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 48px 40px;
   box-shadow: var(--shadow-sm), var(--shadow-md);
+  position: relative;
+  z-index: 20;
+  overflow: hidden;
 }
 
 /* ── Logo ────────────────────────────── */
@@ -434,7 +471,12 @@ h1 {
 </style>
 </head>
 <body>
+<div id="tsparticles"></div>
+<div class="mask-gradient"></div>
+
 <div class="card">
+  <div class="card-glow-lines"></div>
+  <div class="card-glow-blur"></div>
   <div class="card-inner">
     ${page.logo_url ? `<img src="${esc(page.logo_url)}" class="logo" alt="Logo"/>` : ''}
     ${page.total_signups > 3 ? `<div class="proof-pill"><span class="proof-dot"></span>${page.total_signups.toLocaleString()} people on the waitlist</div>` : ''}
@@ -546,6 +588,20 @@ h1 {
   document.getElementById('emailInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') joinWaitlist();
   });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-stars@3.0.3/tsparticles.preset.stars.bundle.min.js"></script>
+<script>
+  if (window.tsParticles) {
+    tsParticles.load("tsparticles", {
+      preset: "stars",
+      background: { color: { value: "transparent" } },
+      particles: {
+        color: { value: "#ffffff" },
+        size: { value: { min: 0.5, max: 1.5 } },
+        move: { enable: true, speed: 0.3 }
+      }
+    });
+  }
 </script>
 </body>
 </html>`;

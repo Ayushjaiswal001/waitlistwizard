@@ -199,17 +199,7 @@ footer { padding: 48px 5%; border-top: 1px solid var(--border-main); background:
   html += '</div>';
   html += '</section>';
 
-  // ── Social Proof ──
-  html += '<section class="social-proof">';
-  html += '<div class="proof-label rv">Trusted by founders at</div>';
-  html += '<div class="proof-logos rv">';
-  html += '<div class="proof-logo">Linear</div>';
-  html += '<div class="proof-logo">Vercel</div>';
-  html += '<div class="proof-logo">Stripe</div>';
-  html += '<div class="proof-logo">Create</div>';
-  html += '<div class="proof-logo">Wonder Monday</div>';
-  html += '</div>';
-  html += '</section>';
+
 
   // ── Narrative Grid (Replacing old features) ──
   html += '<section class="narrative" id="how">';
