@@ -1,34 +1,69 @@
 const base = (title, content) => `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="scroll-behavior: smooth;">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>${title} — WaitlistWizard</title>
+<title>\${title} — WaitlistWizard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#06060e;color:#ededf0;line-height:1.7;padding:0}
-  .wrap{max-width:720px;margin:0 auto;padding:60px 24px}
-  .logo{display:flex;align-items:center;gap:10px;margin-bottom:48px;text-decoration:none;color:#ededf0;font-weight:700;font-size:18px}
-  h1{font-size:32px;font-weight:800;margin-bottom:8px;color:#fff}
-  .updated{font-size:13px;color:#555570;margin-bottom:40px}
-  h2{font-size:18px;font-weight:700;color:#c4b5fd;margin:32px 0 12px}
-  p{color:#8888aa;margin-bottom:14px;font-size:15px}
-  a{color:#a78bfa}
-  ul{color:#8888aa;padding-left:20px;margin-bottom:14px}
-  li{margin-bottom:6px;font-size:15px}
-  .footer{margin-top:60px;padding-top:24px;border-top:1px solid #1f1f40;display:flex;gap:20px;font-size:13px;color:#555570}
-  .footer a{color:#555570}
-  .footer a:hover{color:#a78bfa}
+:root {
+  --bg: #0a0a0b;
+  --text-main: #f0ede6;
+  --text-muted: #888888;
+  --accent: #c8ff00;
+  --border: rgba(255,255,255,0.08);
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'General Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-main);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle Noise Texture */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.wrap { max-width: 680px; margin: 0 auto; padding: 80px 5%; }
+.logo { display:flex; align-items:center; gap:8px; margin-bottom:64px; text-decoration:none; color:var(--text-main); font-weight:600; font-size:18px; }
+.logo svg { width: 24px; height: 24px; fill: var(--accent); }
+
+h1 { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 400; line-height: 1.1; margin-bottom: 8px; letter-spacing: -0.02em; }
+.updated { font-size: 13px; color: var(--text-muted); margin-bottom: 64px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+
+h2 { font-family: var(--font-display); font-size: 28px; font-weight: 400; color: var(--text-main); margin: 48px 0 16px; letter-spacing: -0.01em; }
+p { color: var(--text-muted); margin-bottom: 16px; font-size: 16px; }
+a { color: var(--text-main); text-decoration: underline; text-decoration-color: var(--accent); transition: color 0.2s; }
+a:hover { color: var(--accent); }
+
+ul { color: var(--text-muted); padding-left: 20px; margin-bottom: 16px; }
+li { margin-bottom: 8px; font-size: 16px; }
+
+.footer { margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 24px; font-size: 14px; color: var(--text-muted); }
+.footer a { text-decoration: none; color: var(--text-muted); }
+.footer a:hover { color: var(--text-main); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a href="/" class="logo">⚡ WaitlistWizard</a>
-  ${content}
+  <a href="/" class="logo"><svg viewBox="0 0 24 24"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z"/></svg> WaitlistWizard</a>
+  \${content}
   <div class="footer">
     <a href="/legal/privacy">Privacy Policy</a>
     <a href="/legal/terms">Terms of Service</a>
     <a href="/legal/contact">Contact</a>
-    <span>© ${new Date().getFullYear()} WaitlistWizard</span>
+    <span>© \${new Date().getFullYear()} WaitlistWizard</span>
   </div>
 </div>
 </body>
