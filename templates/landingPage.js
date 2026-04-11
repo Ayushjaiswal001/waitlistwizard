@@ -330,6 +330,10 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
 @media(max-width:1024px){
   .pgrid{grid-template-columns:repeat(2,1fr)}
   .faqcont{grid-template-columns:1fr;gap:48px}
+  .hero .hcont { grid-template-columns: 1fr; text-align: center; gap: 3rem !important; }
+  .hero .hcont .hero-left { display: flex; flex-direction: column; align-items: center; }
+  .email-input-wrapper { max-width: 100% !important; flex-wrap: wrap; justify-content: center; border-radius: 20px !important;}
+  .email-input-wrapper input { text-align: center; margin: 10px 0; }
 }
 @media(max-width:860px){
   .nlinks,.nctas{display:none}
@@ -342,10 +346,11 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   .hsteps::before{display:none}
   .hstep::after{display:none}
   .nf{display:none}
+  .hero-right > div:last-child { right: 0 !important; top: 80% !important; transform: translateY(0) !important; }
 }
 @media(max-width:560px){
-  .hh1{font-size:clamp(32px,8vw,48px)}
-  .hsub{font-size:16px}
+  .hh1{font-size:clamp(32px,8vw,48px) !important}
+  .hsub{font-size:16px !important}
   .hctas{flex-direction:column;width:100%}
   .hbtn-link{width:100%;text-align:center}
   .fgrid{grid-template-columns:1fr}
@@ -355,6 +360,11 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   .ctaform button{border-radius:12px}
   .ftitle h2,.htitle h2,.ptitle h2,.faqleft h2,.ctacont h2{font-size:32px}
   .fcont{flex-direction:column;gap:16px;text-align:center}
+  .hero-cta-box p { flex-wrap: wrap; justify-content: center; padding-left: 0 !important;}
+  .email-input-wrapper { border-radius: 16px !important; padding: 12px !important; }
+  .email-input-wrapper input { padding: 10px !important; }
+  .email-input-wrapper .hbtn-link { width: 100%; text-align: center; }
+  .social-proof > div { justify-content: center !important; }
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 `;
@@ -382,32 +392,79 @@ footer{padding:40px 5%;border-top:1px solid var(--line)}
   // ── Hero ──
   html += '<section class="hero">';
   html += '<canvas id="hcvs"></canvas>';
-  html += '<div class="hcont">';
-  html += '<div class="hbadge">⚡ New — Referral position engine v2</div>';
-  html += '<h1 class="hh1"><span>Launch to an audience</span><span class="gr">already waiting.</span></h1>';
-  html += '<p class="hsub">Build <strong>stunning waitlist pages</strong> with viral referral mechanics. Turn signups into superfans before you even launch.</p>';
-  // FIX: Pure <a> tags — no nested <button>
-  html += '<div class="hctas"><a href="/app#/register" class="hbtn-link primary">Get started free →</a><a href="#how" class="hbtn-link secondary">See how it works</a></div>';
-  html += '<div class="hsocial"><div class="hstars">★★★★★</div><div class="havs"><div class="hav">AJ</div><div class="hav">KM</div><div class="hav">PR</div><div class="hav">SV</div><div class="hav">RK</div></div><span>500+ founders launched with WaitlistWizard</span></div>';
+  html += '<div class="hcont" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1200px; text-align: left; padding: 0 2rem;">';
+  
+  // Left Content
+  html += '<div class="hero-left" style="z-index: 10;">';
+  html += '<h1 class="hh1" style="font-size: clamp(48px, 6vw, 72px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 1.5rem;">';
+  html += '<span>Build Viral</span>';
+  html += '<span class="gr" style="background: linear-gradient(to right, var(--b), #a7c8ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Waitlists.</span>';
+  html += '<span>Guaranteed.</span>';
+  html += '</h1>';
+  html += '<p class="hsub" style="font-size: 1.125rem; color: var(--sub); max-width: 500px; margin: 0 0 2rem 0;">The most powerful waitlist + referral engine for product launches. Go live in 60 seconds.</p>';
+  
+  html += '<div class="hero-cta-box" style="display: flex; flex-direction: column; gap: 1rem;">';
+  html += '<div class="email-input-wrapper" style="background: rgba(30, 31, 39, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(141, 144, 160, 0.15); border-radius: 999px; padding: 0.375rem; display: flex; align-items: center; max-width: 500px; transition: all 0.3s;">';
+  html += '<div style="padding-left: 1rem; color: var(--sub); display: flex; align-items: center;">✨</div>';
+  html += '<input type="email" placeholder="Enter your work email" style="background: transparent; border: none; outline: none; color: white; flex-grow: 1; padding: 0 1rem; font-family: var(--fb);" />';
+  html += '<a href="/app#/register" class="hbtn-link primary" style="padding: 0.875rem 2rem; border-radius: 999px; margin: 0; box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.2);">Start Free →</a>';
   html += '</div>';
+  html += '<p style="font-family: var(--fm); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.4); padding-left: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">';
+  html += '<span>No credit card</span> <span style="width: 4px; height: 4px; background: var(--b); border-radius: 50%;"></span> <span>Free forever</span> <span style="width: 4px; height: 4px; background: var(--b); border-radius: 50%;"></span> <span>Live in 60s</span>';
+  html += '</p>';
+  html += '</div>'; // End cta box
+  html += '</div>'; // End left content
 
-  // ── 3D Mockup — uses .mwin-wrap for perspective container ──
-  html += '<div class="mscene"><div class="mwin-wrap"><div class="mwin"><div class="mchrome"><div class="mdots"><div class="mdot"></div><div class="mdot"></div><div class="mdot"></div></div><div class="murl">waitlistwizard.io/p/my-product</div></div>';
-  html += '<div class="mbody"><div class="mleft"><div class="mpill"><span class="mpulse"></span> 1,204 people waiting</div><h3>The future of productivity is here.</h3><p>Join the waitlist to get early access and exclusive launch perks.</p>';
-  html += '<input type="email" class="minput" placeholder="your@email.com" readonly tabindex="-1" /><button class="mjoin" tabindex="-1">Join the Waitlist ⚡</button>';
-  html += '<div class="msocial"><div class="msavs"><div class="msav"></div><div class="msav"></div><div class="msav"></div><div class="msav"></div></div><span>1,204 on the list · 340 referrals</span></div></div>';
-  html += '<div class="mright"><h4>Analytics</h4><div class="mstat"><div class="mstat-label">Total Signups</div><div class="mstat-value">1,204</div></div>';
-  html += '<div class="mstat"><div class="mstat-label">Page Views</div><div class="mstat-value">6,814</div></div><div class="mstat"><div class="mstat-label">Conversion</div><div class="mstat-value">17.7%</div></div>';
-  html += '<div class="mchart"><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div></div></div></div></div></div>';
-  // Notification badges
-  html += '<div class="nf nf1">🎉 New signup! via referral · just now</div><div class="nf nf2">📈 +47 signups today · 18% conversion</div></div>';
+  // Right Content (3D sphere Illustration)
+  html += '<div class="hero-right" style="position: relative; display: flex; justify-content: center; align-items: center;">';
+  html += '<div style="position: absolute; width: 120%; height: 120%; background: var(--b); opacity: 0.1; filter: blur(120px); border-radius: 50%; z-index: 0;"></div>';
+  html += '<div style="position: relative; width: 100%; max-width: 500px; aspect-ratio: 1; z-index: 1;">';
+  html += '<img src="/img/hero-sphere.png" alt="WaitlistWizard 3D Sphere" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 50px rgba(37, 99, 235, 0.2));" />';
+  
+  // Floating Bubbles
+  html += '<div style="position: absolute; top: 10%; left: -5%; background: rgba(30, 31, 39, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(141, 144, 160, 0.15); padding: 1rem; border-radius: 1rem; border-bottom-left-radius: 0; animation: fbob 3s ease-in-out infinite;">';
+  html += '<p style="font-size: 0.875rem; font-weight: 500; font-family: var(--fb); margin: 0;">Ready to grow your list?</p></div>';
+  
+  html += '<div style="position: absolute; bottom: 20%; right: -5%; background: rgba(30, 31, 39, 0.4); backdrop-filter: blur(20px); border: 1px solid rgba(141, 144, 160, 0.15); padding: 1rem; border-radius: 1rem; border-bottom-right-radius: 0; animation: fbob 4s ease-in-out infinite reverse;">';
+  html += '<p style="font-size: 0.875rem; font-weight: 500; font-family: var(--fb); margin: 0;">Absolutely! Share your link 🔗</p></div>';
+  
+  html += '<div style="position: absolute; top: 50%; right: -15%; background: rgba(30, 31, 39, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(37, 99, 235, 0.3); padding: 1rem; border-radius: 1rem; border-top-right-radius: 0; transform: translateY(2rem); box-shadow: 0 0 30px rgba(37, 99, 235, 0.15);">';
+  html += '<p style="font-size: 0.875rem; font-weight: 700; font-family: var(--fb); margin: 0; display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--b);">You\'re #47</span> on the waitlist!</p></div>';
+  
+  html += '</div>'; // End illustration container
+  html += '</div>'; // End right content
+  html += '</div>'; // End grid container
   html += '</section>';
 
-  // ── Stats ──
-  html += '<section class="stats rv"><div class="stat"><div class="stat-num">60s</div><div class="stat-label">Average Setup Time</div></div>';
-  html += '<div class="stat"><div class="stat-num">3x</div><div class="stat-label">More Signups</div></div>';
-  html += '<div class="stat"><div class="stat-num">100%</div><div class="stat-label">Customizable</div></div>';
-  html += '<div class="stat"><div class="stat-num">∞</div><div class="stat-label">Possibilities</div></div></section>';
+  // ── Social Proof Bar ──
+  html += '<section class="social-proof rv" style="padding: 6rem 0; position: relative; overflow: hidden;">';
+  html += '<div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap;">';
+  
+  // Testimonial
+  html += '<div style="display: flex; align-items: center; gap: 1.5rem;">';
+  html += '<div style="width: 4rem; height: 4rem; border-radius: 50%; overflow: hidden; border: 2px solid rgba(37, 99, 235, 0.2);">';
+  html += '<img src="/img/founder.png" alt="Ayush J." style="width: 100%; height: 100%; object-fit: cover;" />';
+  html += '</div>';
+  html += '<div>';
+  html += '<p style="font-size: 1.875rem; font-weight: 800; font-family: var(--fd); font-style: italic; letter-spacing: -0.04em; margin-bottom: 0.25rem;">"Incredible"</p>';
+  html += '<p style="font-family: var(--fm); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255, 255, 255, 0.4);">Ayush J., Founder</p>';
+  html += '</div></div>';
+  
+  // Logos
+  html += '<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2.5rem; opacity: 0.4; filter: grayscale(100%); transition: all 0.7s;">';
+  html += '<span style="font-size: 1.5rem; font-weight: 700; font-family: var(--fd); letter-spacing: -0.04em;">Tabs</span>';
+  html += '<span style="font-size: 1.5rem; font-weight: 700; font-family: var(--fd); letter-spacing: -0.04em;">Wonder Monday</span>';
+  html += '<span style="font-size: 1.5rem; font-weight: 700; font-family: var(--fd); letter-spacing: -0.04em;">Caden Lane</span>';
+  html += '<span style="font-size: 1.5rem; font-weight: 700; font-family: var(--fd); letter-spacing: -0.04em;">Create</span>';
+  html += '</div>';
+  
+  html += '</div>';
+  html += '<div style="margin-top: 6rem; height: 1px; width: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);"></div>';
+  html += '</section>';
+
+  // ── Features (Replacing Stats) ──
+  html += '<section class="stats" style="display: none;"></section>'; // Hide old stats
+
 
   // ── Features ──
   html += '<section class="features" id="features"><div class="ftitle rv"><h2>Everything you need to build hype</h2><p>All the tools to create, share, and analyze your waitlist.</p></div>';
@@ -559,6 +616,7 @@ function animate(){
 }
 animate();
 `;
+
   html += '</script>';
   html += '<script src="/js/orbital.js" defer></script>';
   html += '</body></html>';
