@@ -174,41 +174,112 @@ function showToast(message, type = 'success') {
 
 /* ─── Login Page ─────────────────────────────────────── */
 router.on('login', () => {
-  if (isAuthenticated()) {
-    router.navigate('dashboard');
-    return;
-  }
+  if (isAuthenticated()) { router.navigate('dashboard'); return; }
+
   document.getElementById('app').innerHTML = `
-    <div class="auth-wrapper">
-      <div class="auth-card">
-        <div class="auth-logo">
-          <span style="font-size:36px">⚡</span>
-        </div>
-        <h1 class="auth-title">Welcome back</h1>
-        <p class="auth-subtitle">Sign in to your WaitlistWizard account</p>
-        <form id="loginForm">
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
+    <div class="auth-split">
+      <!-- Left: Form -->
+      <section class="auth-split-left">
+        <div class="auth-split-inner">
+          <a href="/" class="auth-brand">
+            <span style="font-size:28px;filter:drop-shadow(0 0 10px rgba(167,139,250,.35))">⚡</span>
+            <span style="font-size:17px;font-weight:700;font-family:var(--font-heading);letter-spacing:-0.3px">WaitlistWizard</span>
+          </a>
+
+          <div style="margin-top:36px">
+            <h1 class="auth-split-title ae a1">Welcome back <span style="font-weight:300">👋</span></h1>
+            <p class="auth-split-sub ae a2">Sign in to your WaitlistWizard account</p>
           </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+
+          <form id="loginForm" style="margin-top:28px">
+            <div class="form-group ae a3">
+              <label class="form-label">Email Address</label>
+              <div class="glass-input-wrap">
+                <input type="email" class="form-input glass-input" id="loginEmail"
+                  placeholder="you@example.com" required autocomplete="email" />
+              </div>
+            </div>
+
+            <div class="form-group ae a4">
+              <label class="form-label">Password</label>
+              <div class="glass-input-wrap" style="position:relative">
+                <input type="password" class="form-input glass-input" id="loginPassword"
+                  placeholder="••••••••" required autocomplete="current-password"
+                  style="padding-right:48px" />
+                <button type="button" id="loginPwToggle" class="pw-toggle" tabindex="-1"
+                  aria-label="Toggle password">
+                  <svg id="loginEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="ae a5" style="display:flex;justify-content:flex-end;margin-bottom:20px">
+              <a href="/legal/contact" style="font-size:13px;color:var(--accent)">Forgot password?</a>
+            </div>
+
+            <div id="loginError" class="alert alert-danger ae a5" style="display:none;margin-bottom:16px"></div>
+
+            <button type="submit" class="btn btn-primary ae a6"
+              style="width:100%;justify-content:center;padding:14px;font-size:15px" id="loginBtn">
+              Sign In
+            </button>
+          </form>
+
+          <p class="ae a7" style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-secondary)">
+            No account? <a href="#/register" style="color:var(--accent);font-weight:500">Create one free →</a>
+          </p>
+
+          <div class="auth-footer ae a8">
+            <a href="/legal/privacy">Privacy</a>
+            <span>·</span>
+            <a href="/legal/terms">Terms</a>
           </div>
-          <div id="loginError" class="alert alert-danger" style="display:none;margin-bottom:16px"></div>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" id="loginBtn">Sign In</button>
-        </form>
-        <p style="text-align:center;margin-top:20px;font-size:14px;color:var(--text-secondary)">
-          No account? <a href="#/register">Create one free</a>
-        </p>
-        <div class="auth-footer">
-          <a href="/legal/privacy">Privacy</a>
-          <span>·</span>
-          <a href="/legal/terms">Terms</a>
         </div>
-      </div>
+      </section>
+
+      <!-- Right: Hero + Testimonials -->
+      <section class="auth-split-right ae-right">
+        <div class="auth-hero-img" style="background-image:url('https://images.unsplash.com/photo-1642615835477-d303d7dc9ee9?w=1400&q=80')"></div>
+        <div class="auth-testimonials">
+          <div class="auth-tcard at1">
+            <img src="https://randomuser.me/api/portraits/women/57.jpg" class="auth-tavatar" alt="" />
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#fff">Sarah Chen</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px">@sarahdigital</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">
+                Amazing platform — live in under 60 seconds.
+              </div>
+            </div>
+          </div>
+          <div class="auth-tcard at2">
+            <img src="https://randomuser.me/api/portraits/men/64.jpg" class="auth-tavatar" alt="" />
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#fff">Marcus Johnson</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px">@marcustech</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">
+                The referral engine is a game-changer.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   `;
+
+  // Password toggle
+  document.getElementById('loginPwToggle').addEventListener('click', () => {
+    const inp = document.getElementById('loginPassword');
+    const icon = document.getElementById('loginEyeIcon');
+    const show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    icon.innerHTML = show
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  });
 
   document.getElementById('loginForm').onsubmit = async (e) => {
     e.preventDefault();
@@ -217,7 +288,6 @@ router.on('login', () => {
     errEl.style.display = 'none';
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Signing in…';
-
     try {
       const res = await api.post('/auth/login', {
         email: document.getElementById('loginEmail').value,
@@ -237,48 +307,105 @@ router.on('login', () => {
 
 /* ─── Register Page ──────────────────────────────────── */
 router.on('register', () => {
-  if (isAuthenticated()) {
-    router.navigate('dashboard');
-    return;
-  }
+  if (isAuthenticated()) { router.navigate('dashboard'); return; }
+
   document.getElementById('app').innerHTML = `
-    <div class="auth-wrapper">
-      <div class="auth-card">
-        <div class="auth-logo">
-          <span style="font-size:36px">⚡</span>
-        </div>
-        <h1 class="auth-title">Create your account</h1>
-        <p class="auth-subtitle">Start building viral waitlists in 60 seconds</p>
-        <div class="feature-pills">
-          <span class="pill">Free forever</span>
-          <span class="pill">No credit card</span>
-          <span class="pill">1 page included</span>
-        </div>
-        <form id="registerForm">
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" id="regEmail" placeholder="you@example.com" required autocomplete="email" />
+    <div class="auth-split">
+      <!-- Left: Form -->
+      <section class="auth-split-left">
+        <div class="auth-split-inner">
+          <a href="/" class="auth-brand">
+            <span style="font-size:28px;filter:drop-shadow(0 0 10px rgba(167,139,250,.35))">⚡</span>
+            <span style="font-size:17px;font-weight:700;font-family:var(--font-heading);letter-spacing:-0.3px">WaitlistWizard</span>
+          </a>
+
+          <div style="margin-top:36px">
+            <h1 class="auth-split-title ae a1">Start for free <span style="font-weight:300">🚀</span></h1>
+            <p class="auth-split-sub ae a2">Build viral waitlists in 60 seconds. No credit card needed.</p>
           </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" class="form-input" id="regPassword" placeholder="Min 8 characters" required minlength="8" autocomplete="new-password" />
-            <div id="strengthBar" style="height:4px;border-radius:2px;margin-top:8px;background:var(--border);overflow:hidden">
-              <div id="strengthFill" style="height:100%;width:0%;border-radius:2px;transition:width .3s,background .3s"></div>
+
+          <div class="feature-pills ae a2" style="margin-top:16px;justify-content:flex-start">
+            <span class="pill">Free forever</span>
+            <span class="pill">No credit card</span>
+            <span class="pill">1 page included</span>
+          </div>
+
+          <form id="registerForm" style="margin-top:28px">
+            <div class="form-group ae a3">
+              <label class="form-label">Email Address</label>
+              <div class="glass-input-wrap">
+                <input type="email" class="form-input glass-input" id="regEmail"
+                  placeholder="you@example.com" required autocomplete="email" />
+              </div>
             </div>
-            <div id="strengthText" class="form-hint"></div>
+
+            <div class="form-group ae a4">
+              <label class="form-label">Password</label>
+              <div class="glass-input-wrap" style="position:relative">
+                <input type="password" class="form-input glass-input" id="regPassword"
+                  placeholder="Min 8 characters" required minlength="8" autocomplete="new-password"
+                  style="padding-right:48px" />
+                <button type="button" id="regPwToggle" class="pw-toggle" tabindex="-1"
+                  aria-label="Toggle password">
+                  <svg id="regEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="strengthBar" style="height:3px;border-radius:2px;margin-top:8px;background:var(--border);overflow:hidden">
+                <div id="strengthFill" style="height:100%;width:0%;border-radius:2px;transition:width .3s,background .3s"></div>
+              </div>
+              <div id="strengthText" class="form-hint"></div>
+            </div>
+
+            <div id="regError" class="alert alert-danger ae a5" style="display:none;margin-bottom:16px"></div>
+
+            <button type="submit" class="btn btn-primary ae a5"
+              style="width:100%;justify-content:center;padding:14px;font-size:15px" id="regBtn">
+              Create Free Account
+            </button>
+          </form>
+
+          <p class="ae a6" style="text-align:center;margin-top:24px;font-size:14px;color:var(--text-secondary)">
+            Already have an account? <a href="#/login" style="color:var(--accent);font-weight:500">Sign in →</a>
+          </p>
+
+          <div class="auth-footer ae a7">
+            <a href="/legal/privacy">Privacy</a>
+            <span>·</span>
+            <a href="/legal/terms">Terms</a>
           </div>
-          <div id="regError" class="alert alert-danger" style="display:none;margin-bottom:16px"></div>
-          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" id="regBtn">Create Account</button>
-        </form>
-        <p style="text-align:center;margin-top:20px;font-size:14px;color:var(--text-secondary)">
-          Already have an account? <a href="#/login">Sign in</a>
-        </p>
-        <div class="auth-footer">
-          <a href="/legal/privacy">Privacy</a>
-          <span>·</span>
-          <a href="/legal/terms">Terms</a>
         </div>
-      </div>
+      </section>
+
+      <!-- Right: Hero + Testimonials -->
+      <section class="auth-split-right ae-right">
+        <div class="auth-hero-img" style="background-image:url('https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1400&q=80')"></div>
+        <div class="auth-testimonials">
+          <div class="auth-tcard at1">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="auth-tavatar" alt="" />
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#fff">David Martinez</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px">@davidcreates</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">
+                3x more signups within the first week.
+              </div>
+            </div>
+          </div>
+          <div class="auth-tcard at2">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="auth-tavatar" alt="" />
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#fff">Priya Sharma</div>
+              <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:6px">@priyabuilds</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.75);line-height:1.5">
+                Set up in 60 seconds and collected 500 emails overnight.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   `;
 
