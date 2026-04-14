@@ -5,25 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WaitlistWizard — Build viral waitlists</title>
   <meta name="description" content="Create stunning waitlist pages with referral mechanics. Build buzz before you launch." />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#FAFAF8" />
   <meta name="robots" content="noindex, nofollow" />
   <meta property="og:title" content="WaitlistWizard" />
   <meta property="og:description" content="Build viral waitlist pages with referral mechanics." />
   <meta property="og:type" content="website" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a0a0b;
-      --bg-surface: #111113;
-      --bg-input: #141416;
-      --text-main: #f0ede6;
-      --text-muted: #888888;
-      --accent: #c8ff00;
-      --border: rgba(255,255,255,0.08);
+      --bg: #FAFAF8;
+      --bg-surface: #FFFFFF;
+      --bg-input: #F3F1EF;
+      --text-main: #242220;
+      --text-muted: #6B6862;
+      --accent: #7a54ff;
+      --border: rgba(36,34,32,0.06);
       --font-display: 'Instrument Serif', serif;
       --font-body: 'General Sans', sans-serif;
     }
@@ -35,9 +34,12 @@
       line-height: 1.6;
     }
     body::before {
-      content: ''; position: fixed; inset: 0; z-index: -1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
+      content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image: 
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.4;
     }
     a { color: inherit; text-decoration: none; }
   </style>
@@ -48,17 +50,17 @@
 <body>
   <div id="app">
     <div class="boot-loader">
-      <span class="boot-logo">⚡</span>
+      <span class="boot-logo">✨</span>
       <div class="boot-spinner"></div>
     </div>
   </div>
   <style>
     .boot-loader{display:flex;flex-direction:column;align-items:center;
-      justify-content:center;height:100vh;background:#0a0a0f;gap:20px}
-    .boot-logo{font-size:40px}
-    .boot-spinner{width:28px;height:28px;border:3px solid
-      rgba(167,139,250,0.2);border-top-color:#a78bfa;border-radius:50%;
-      animation:boot-spin 0.75s linear infinite}
+      justify-content:center;height:100vh;background:#FAFAF8;gap:20px}
+    .boot-logo{font-size:48px}
+    .boot-spinner{width:36px;height:36px;border:4px solid
+      rgba(122,84,255,0.15);border-top-color:#7a54ff;border-radius:50%;
+      animation:boot-spin 0.8s ease infinite}
     @keyframes boot-spin{to{transform:rotate(360deg)}}
   </style>
   <script type="module" src="/js/app.js"></script>

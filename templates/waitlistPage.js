@@ -20,7 +20,7 @@ const BODY_FONTS = {
  */
 function buildPalette(accent) {
   // Parse hex to get a hue for tinting
-  const hex = (accent || '#4f7cff').replace('#', '');
+  const hex = (accent || '#7a54ff').replace('#', '');
   const r = parseInt(hex.slice(0,2),16)/255;
   const g = parseInt(hex.slice(2,4),16)/255;
   const b = parseInt(hex.slice(4,6),16)/255;
@@ -39,12 +39,12 @@ export function renderWaitlistPage(page) {
   const hFont = HEADING_FONTS[page.font_pair] || 'Sora';
   const bFont = BODY_FONTS[page.font_pair] || 'Inter';
   const fontUrl = FONT_URLS[page.font_pair] || FONT_URLS['cabinet-inter'];
-  const accent = page.accent_color || '#4f7cff';
+  const accent = page.accent_color || '#7a54ff';
   const { hue } = buildPalette(accent);
   const APP_URL = process.env.APP_URL || '';
 
   // Determine if user chose a light or dark background
-  const bgStyle = page.bg_style || 'dark';
+  const bgStyle = page.bg_style || 'light'; // Defaulting to light for the elegant feel
   const isLight = bgStyle === 'light';
 
   return `<!DOCTYPE html>
@@ -53,7 +53,7 @@ export function renderWaitlistPage(page) {
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>\${esc(page.headline || 'Join the Waitlist')}</title>
 <meta name="description" content="\${esc(page.subheadline || '')}"/>
-<meta name="theme-color" content="\${esc(accent)}"/>
+<meta name="theme-color" content="\${isLight ? '#FAFAF8' : '#121016'}"/>
 <link rel="canonical" href="\${APP_URL}/p/\${esc(page.slug)}"/>
 <meta property="og:type" content="website"/>
 <meta property="og:title" content="\${esc(page.headline || 'Join the Waitlist')}"/>
@@ -74,23 +74,23 @@ export function renderWaitlistPage(page) {
 /* ── Page ───────────────────────────── */
 :root {
   --accent: \${accent};
-  --accent-soft: \${accent}12;
-  --accent-border: \${accent}30;
+  --accent-soft: \${accent}1A;
+  --accent-border: \${accent}33;
+  --accent-yellow: #fddb6a;
   
-  /* Force Dark/Space Mode Aesthetics per request */
-  --bg: #020617; /* slate-950 */
-  --bg-card: #000000;
-  --bg-input: #0f172a;
-  --bg-input-hover: #1e293b;
-  --border: #1e293b;
-  --border-hover: #334155;
-  --text: #ffffff;
-  --text-secondary: #cbd5e1;
-  --text-muted: #64748b;
-  --shadow-sm: 0 1px 2px rgba(0,0,0,0.5);
-  --shadow-md: 0 4px 16px rgba(0,0,0,0.8);
+  --bg: \${isLight ? '#FAFAF8' : '#121016'};
+  --bg-card: \${isLight ? '#FFFFFF' : '#1e1c22'};
+  --bg-input: \${isLight ? '#F3F1EF' : '#2c2a30'};
+  --bg-input-hover: \${isLight ? '#e5e3e1' : '#3d3a44'};
+  --border: \${isLight ? 'rgba(36,34,32,0.06)' : 'rgba(255,255,255,0.08)'};
+  --border-hover: \${isLight ? 'rgba(36,34,32,0.12)' : 'rgba(255,255,255,0.16)'};
+  --text: \${isLight ? '#242220' : '#FFFFFF'};
+  --text-secondary: \${isLight ? '#4B4845' : '#D4D2D8'};
+  --text-muted: \${isLight ? '#6B6862' : '#8A8790'};
+  --shadow-sm: \${isLight ? '0 4px 20px rgba(0,0,0,0.03)' : '0 4px 20px rgba(0,0,0,0.2)'};
+  --shadow-md: \${isLight ? '0 12px 40px ' + accent + '1F' : '0 12px 40px rgba(0,0,0,0.4)'}; /* 12% opacity shadow */
   
-  --radius: 12px;
+  --radius: 16px;
   --font-h: '\${hFont}', system-ui, sans-serif;
   --font-b: '\${bFont}', system-ui, sans-serif;
 }
@@ -111,192 +111,186 @@ body {
   padding: 24px;
   color: var(--text);
   position: relative;
-  overflow: hidden; /* Prevent particle scroll */
+  overflow: hidden;
 }
 
-/* Background Particle Container */
-#tsparticles {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
+/* ── Grid Pattern & Blobs for Human Tech Feel ── */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
 }
 
-/* To mimic the Sparkles radial gradient mask effect */
-.mask-gradient {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--bg);
-  mask-image: radial-gradient(350px 200px at top, transparent 20%, black);
-  -webkit-mask-image: radial-gradient(350px 200px at top, transparent 20%, black);
-  pointer-events: none;
-  z-index: 1;
+.bg-blobs { position: absolute; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+.blob { position: absolute; filter: blur(140px); border-radius: 50%; }
+.blob-1 { width: 70vw; height: 70vw; background: var(--accent); top: -20%; left: -20%; opacity: \${isLight ? 0.15 : 0.08}; animation: float 12s infinite alternate;}
+.blob-2 { width: 60vw; height: 60vw; background: var(--accent-yellow); bottom: -10%; right: -20%; opacity: \${isLight ? 0.2 : 0.05}; animation: float 14s infinite alternate-reverse;}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(30px) scale(1.05); }
 }
 
-/* ── Card ─── Clean, structured, elevated ── */
+/* ── Card ─── Soft, Soothing, Rounded ── */
 .card {
-  max-width: 480px;
+  max-width: 520px;
   width: 100%;
   position: relative;
   z-index: 20;
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* Glowing Top Lines for Card */
-.card-glow-lines {
-  position: absolute;
-  top: -1px;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--accent), transparent);
-  z-index: 21;
-}
-.card-glow-blur {
-  position: absolute;
-  top: -2px;
-  left: 20%;
-  right: 20%;
-  height: 4px;
-  background: linear-gradient(to right, transparent, var(--accent), transparent);
-  filter: blur(4px);
-  z-index: 20;
 }
 
 .card-inner {
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 48px 40px;
-  box-shadow: var(--shadow-sm), var(--shadow-md);
+  border-radius: 32px;
+  padding: 56px 48px;
+  box-shadow: var(--shadow-md), var(--shadow-sm);
   position: relative;
   z-index: 20;
   overflow: hidden;
+  text-align: center;
+}
+
+/* Subtle corner highlight */
+.card-inner::after {
+  content: ''; position: absolute; top: -50px; right: -50px; width: 100px; height: 100px;
+  background: var(--accent); filter: blur(40px); opacity: \${isLight ? 0.2 : 0.4}; pointer-events: none;
 }
 
 /* ── Logo ────────────────────────────── */
-.logo { max-height: 40px; margin-bottom: 24px; }
+.logo { max-height: 48px; margin-bottom: 32px; border-radius: 12px; }
 
 /* ── Social proof pill ───────────────── */
 .proof-pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 100px;
   background: var(--accent-soft);
   border: 1px solid var(--accent-border);
   color: var(--accent);
   font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  letter-spacing: 0.02em;
 }
 
 .proof-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--accent);
   animation: blink 2s ease infinite;
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .3; }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--accent-soft); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 4px var(--accent-soft); }
 }
 
 /* ── Typography ─────────────────────── */
 h1 {
   font-family: var(--font-h);
-  font-size: 30px;
+  font-size: 36px;
   font-weight: 700;
   color: var(--text);
-  line-height: 1.25;
-  margin-bottom: 12px;
-  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.03em;
 }
 
 .sub {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--text-secondary);
-  margin-bottom: 32px;
+  margin-bottom: 40px;
   line-height: 1.6;
 }
 
 /* ── Form ────────────────────────────── */
 .form-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-direction: column;
+}
+
+@media (min-width: 480px) {
+  .form-row { flex-direction: row; }
 }
 
 .email-input {
   flex: 1;
-  padding: 12px 16px;
-  border-radius: var(--radius);
+  padding: 16px 20px;
+  border-radius: 999px; /* Pill shape */
   background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 15px;
+  font-size: 16px;
   font-family: var(--font-b);
   outline: none;
   transition: border-color .2s, box-shadow .2s;
+  text-align: left;
 }
 
-.email-input::placeholder { color: var(--text-muted); }
+.email-input::placeholder { color: var(--text-muted); font-weight: 400;}
 
 .email-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px \${accent}15;
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-/* ── CTA Button — SOLID, not gradient ── */
+/* ── CTA Button ── */
 .cta-btn {
-  padding: 12px 24px;
-  border-radius: var(--radius);
+  padding: 16px 32px;
+  border-radius: 999px;
   background: var(--accent);
   border: none;
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  font-family: var(--font-h);
+  font-family: var(--font-b); /* Match body for human feel or h for bold */
   white-space: nowrap;
-  transition: opacity .15s, transform .1s;
-  /* Slight text shadow for readability */
-  text-shadow: 0 1px 2px rgba(0,0,0,.2);
+  transition: transform .2s, box-shadow .2s, background .2s;
+  box-shadow: 0 4px 14px var(--accent-border);
 }
 
-.cta-btn:hover { opacity: .88; }
-.cta-btn:active { transform: scale(.97); }
-.cta-btn:disabled { opacity: .5; cursor: not-allowed; }
+.cta-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--accent-border); filter: brightness(1.05); }
+.cta-btn:active { transform: scale(.98); }
+.cta-btn:disabled { opacity: .6; cursor: not-allowed; }
 
 /* ── Trust line ─────────────────────── */
 .trust-line {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-muted);
-  margin-top: 4px;
+  margin-top: 16px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  font-weight: 500;
 }
 
-.trust-line svg { flex-shrink: 0; }
+.trust-line svg { flex-shrink: 0; fill: var(--text-muted); opacity: 0.6; }
 
 /* ── Error ───────────────────────────── */
 .err {
   color: #ef4444;
-  font-size: 13px;
-  margin-top: 8px;
+  font-size: 14px;
+  margin-top: 12px;
   display: none;
+  font-weight: 500;
 }
 
 /* ── Success State ───────────────────── */
@@ -307,14 +301,17 @@ h1 {
 }
 
 .check-svg {
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
   display: block;
+  background: var(--accent-soft);
+  border-radius: 50%;
+  padding: 12px;
 }
 
 .check-circle {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-dasharray: 166;
   stroke-dashoffset: 166;
   animation: draw .6s .2s forwards;
@@ -323,7 +320,7 @@ h1 {
 .check-mark {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 2;
+  stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 48;
@@ -335,67 +332,69 @@ h1 {
 
 .pos-num {
   font-family: var(--font-h);
-  font-size: 48px;
-  font-weight: 800;
+  font-size: 56px;
+  font-weight: 700;
   color: var(--text);
   line-height: 1;
-  margin: 8px 0 4px;
-  letter-spacing: -1px;
+  margin: 12px 0 8px;
+  letter-spacing: -1.5px;
 }
 
 .pos-label {
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 14px;
+  color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 24px;
+  letter-spacing: 1.5px;
+  margin-bottom: 32px;
+  font-weight: 600;
 }
 
 .success-msg {
-  font-size: 16px;
+  font-size: 17px;
   color: var(--text-secondary);
-  margin-bottom: 28px;
+  margin-bottom: 32px;
   line-height: 1.6;
 }
 
 .ref-label {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: .8px;
+  letter-spacing: 1px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .ref-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .ref-input {
   flex: 1;
-  padding: 10px 14px;
-  border-radius: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
   background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   font-family: monospace;
   outline: none;
+  text-align: center;
 }
 
 .copy-btn {
-  padding: 10px 18px;
-  border-radius: 10px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
   background: var(--bg-input);
   border: 1px solid var(--border);
   color: var(--text);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   font-family: var(--font-b);
-  transition: border-color .2s, background .2s;
+  transition: all .2s;
 }
 
 .copy-btn:hover {
@@ -408,61 +407,64 @@ h1 {
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .share-btn {
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
   border: 1px solid var(--border);
-  background: transparent;
+  background: var(--bg-card);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
   font-family: var(--font-b);
+  font-weight: 500;
   transition: all .2s;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
-.share-btn:hover { border-color: var(--border-hover); color: var(--text); }
+.share-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--bg-input); transform: translateY(-1px); }
 .share-btn.tw:hover { background: #1da1f2; border-color: #1da1f2; color: #fff; }
 .share-btn.wa:hover { background: #25d366; border-color: #25d366; color: #fff; }
 .share-btn.li:hover { background: #0077b5; border-color: #0077b5; color: #fff; }
 
 .ref-count {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--text-muted);
-  margin-top: 16px;
+  margin-top: 24px;
+  font-weight: 500;
 }
 
 /* ── Branding ────────────────────────── */
 .branding {
   text-align: center;
-  margin-top: 24px;
-  font-size: 12px;
+  margin-top: 32px;
+  font-size: 13px;
   color: var(--text-muted);
-  opacity: .5;
+  opacity: .6;
   transition: opacity .2s;
+  font-weight: 500;
 }
 
-.branding:hover { opacity: .8; }
+.branding:hover { opacity: 1; }
 
 .branding a {
-  color: var(--text-muted);
+  color: var(--accent);
   text-decoration: none;
+  font-weight: 600;
 }
-.branding a:hover { color: var(--text-secondary); }
+.branding a:hover { text-decoration: underline; }
 
 /* ── Responsive ──────────────────────── */
 @media (max-width: 520px) {
-  .card-inner { padding: 32px 24px; }
-  .form-row { flex-direction: column; }
-  h1 { font-size: 24px; }
-  .sub { font-size: 15px; }
-  .pos-num { font-size: 40px; }
+  .card-inner { padding: 40px 24px; }
+  h1 { font-size: 30px; }
+  .pos-num { font-size: 48px; }
+  .share-btn { padding: 10px 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -471,39 +473,40 @@ h1 {
 </style>
 </head>
 <body>
-<div id="tsparticles"></div>
-<div class="mask-gradient"></div>
+
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+</div>
 
 <div class="card">
-  <div class="card-glow-lines"></div>
-  <div class="card-glow-blur"></div>
   <div class="card-inner">
-    ${page.logo_url ? `<img src="${esc(page.logo_url)}" class="logo" alt="Logo"/>` : ''}
-    ${page.total_signups > 3 ? `<div class="proof-pill"><span class="proof-dot"></span>${page.total_signups.toLocaleString()} people on the waitlist</div>` : ''}
-    <h1>${esc(page.headline)}</h1>
-    <p class="sub">${esc(page.subheadline)}</p>
+    \${page.logo_url ? \`<img src="\${esc(page.logo_url)}" class="logo" alt="Logo"/>\` : ''}
+    \${page.total_signups > 3 ? \`<div class="proof-pill"><span class="proof-dot"></span>\${page.total_signups.toLocaleString()} people ahead of you</div>\` : ''}
+    <h1>\${esc(page.headline)}</h1>
+    <p class="sub">\${esc(page.subheadline)}</p>
 
     <div id="formArea">
       <div class="form-row">
         <input type="email" id="emailInput" class="email-input" placeholder="Enter your email" autocomplete="email"/>
-        <button class="cta-btn" id="joinBtn" onclick="joinWaitlist()">${esc(page.cta_text)}</button>
+        <button class="cta-btn" id="joinBtn" onclick="joinWaitlist()">\${esc(page.cta_text)}</button>
       </div>
       <div class="trust-line">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 6V12L16 16" stroke="var(--text-muted)" stroke-width="2" fill="none"/></svg>
         No spam. Unsubscribe anytime.
       </div>
       <div class="err" id="errMsg"></div>
     </div>
 
     <div class="success" id="successArea">
-      <svg class="check-svg" width="56" height="56" viewBox="0 0 64 64">
-        <circle class="check-circle" cx="32" cy="32" r="30"/>
-        <path class="check-mark" d="M20 32l9 9 15-18"/>
+      <svg class="check-svg" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="check-circle" cx="32" cy="32" r="28"/>
+        <path class="check-mark" d="M22 32l8 8 14-16"/>
       </svg>
-      <p class="success-msg">${esc(page.success_message)}</p>
+      <p class="success-msg">\${esc(page.success_message)}</p>
       <div class="pos-num" id="posNum"></div>
       <div class="pos-label">your position</div>
-      <div class="ref-label">Share to move up</div>
+      <div class="ref-label">Share to jump ahead</div>
       <div class="ref-row">
         <input type="text" class="ref-input" id="refLink" readonly/>
         <button class="copy-btn" onclick="copyLink()">Copy</button>
@@ -516,15 +519,15 @@ h1 {
       <div class="ref-count" id="refCount">0 referrals so far</div>
     </div>
 
-    ${!page.remove_branding ? `
-      <div class="branding">Powered by <a href="${APP_URL}" target="_blank">WaitlistWizard</a></div>
-    ` : ''}
+    \${!page.remove_branding ? \`
+      <div class="branding">Powered by <a href="\${APP_URL}" target="_blank">WaitlistWizard</a></div>
+    \` : ''}
   </div>
 </div>
 
 <script>
-  const SLUG = ${JSON.stringify(page.slug)};
-  const ORIGIN = ${JSON.stringify(APP_URL)};
+  const SLUG = \${JSON.stringify(page.slug)};
+  const ORIGIN = \${JSON.stringify(APP_URL)};
   const REF = new URLSearchParams(location.search).get('ref');
 
   async function joinWaitlist() {
@@ -553,7 +556,7 @@ h1 {
       err.textContent = e.message;
       err.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = ${JSON.stringify(page.cta_text)};
+      btn.textContent = \${JSON.stringify(page.cta_text)};
     }
   }
 
@@ -579,7 +582,7 @@ h1 {
       const btn = document.querySelector('.copy-btn');
       const orig = btn.textContent;
       btn.textContent = 'Copied!';
-      btn.style.color = '#34d399';
+      btn.style.color = 'var(--accent)';
       setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
     }).catch(() => { input.select(); document.execCommand('copy'); });
   }
@@ -589,22 +592,8 @@ h1 {
     if (e.key === 'Enter') joinWaitlist();
   });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@tsparticles/preset-stars@3.0.3/tsparticles.preset.stars.bundle.min.js"></script>
-<script>
-  if (window.tsParticles) {
-    tsParticles.load("tsparticles", {
-      preset: "stars",
-      background: { color: { value: "transparent" } },
-      particles: {
-        color: { value: "#ffffff" },
-        size: { value: { min: 0.5, max: 1.5 } },
-        move: { enable: true, speed: 0.3 }
-      }
-    });
-  }
-</script>
 </body>
-</html>`;
+</html>\`;
 }
 
 function esc(s) {
